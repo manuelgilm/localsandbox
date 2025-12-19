@@ -16,9 +16,14 @@ RUN pip install --no-cache-dir \
     matplotlib \
     seaborn
 
-# Create directories
-RUN mkdir -p /mlflow/artifacts /home/jovyan/work && \
-    chown -R jovyan:users /mlflow /home/jovyan/work
+# Create directories for data, mlflow, and work
+RUN mkdir -p /mlflow/artifacts /home/jovyan/work /data && \
+    chown -R jovyan:users /mlflow /home/jovyan/work /data
+
+# Define volumes
+VOLUME /mlflow
+VOLUME /home/jovyan/work
+VOLUME /data
 
 # Copy startup script
 COPY start-services.sh /usr/local/bin/start-services.sh
