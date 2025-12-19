@@ -20,26 +20,16 @@ RUN pip install --no-cache-dir \
 RUN mkdir -p /mlflow/artifacts /home/jovyan/work && \
     chown -R jovyan:users /mlflow /home/jovyan/work
 
+# Copy startup script
+COPY start-services.sh /usr/local/bin/start-services.sh
+RUN chmod +x /usr/local/bin/start-services.sh
+
 USER jovyan
 
 WORKDIR /home/jovyan/work
 
 # Expose ports for Jupyter and MLflow
 EXPOSE 8888 5000
-
-# Create startup script
-USER root
-RUN echo '#!/bin/bash\n\
-mlflow server --host 0.0.0.0 --port 5000 \\\n\
-  --backend-store-uri sqlite:///mlflow/mlflow.db \\\n\
-  --default-artifact-root /mlflow/artifacts \\\n\
-  --serve-artifacts --gunicorn-opts "--timeout 120" &\n\
-\n\
-exec start-notebook.sh "$@"\n\
-' > /usr/local/bin/start-services.sh && \
-    chmod +x /usr/local/bin/start-services.sh
-
-USER jovyan
 
 ENV MLFLOW_TRACKING_URI=http://localhost:5000
 
