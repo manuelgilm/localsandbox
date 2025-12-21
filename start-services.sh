@@ -8,7 +8,7 @@ sleep 5  # Wait for Jupyter to finish setup
 export MLFLOW_SERVER_ALLOWED_HOSTS=*
 mlflow server --host 0.0.0.0 --port 5000 \
   --backend-store-uri sqlite:///mlflow/mlflow.db \
-  --default-artifact-root /mlflow \
+  --default-artifact-root /mlflow/artifacts \
   --serve-artifacts
 EOF
 chmod +x /tmp/start-mlflow.sh
