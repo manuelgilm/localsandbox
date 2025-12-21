@@ -1,0 +1,39 @@
+# services:
+#   mlflow:
+#     build:
+#       context: .
+#       dockerfile: mlflow.Dockerfile
+#     image: localsandbox-mlflow:latest
+#     container_name: mlflow
+#     ports:
+#       - "5000:5000"
+#     volumes:
+#       - ./mlflow:/mlflow
+#     environment:
+#       - MLFLOW_SERVER_ALLOWED_HOSTS=*
+
+#   jupyter:
+#     build:
+#       context: .
+#       dockerfile: jupyter.Dockerfile
+#     image: localsandbox-jupyter:latest
+#     container_name: jupyter
+#     ports:
+#       - "8888:8888"
+#     volumes:
+#       - ./notebooks:/home/jovyan/work
+#     environment:
+#       - JUPYTER_ENABLE_LAB=yes
+#       - MLFLOW_TRACKING_URI=http://mlflow:5000
+#       - CHOWN_HOME=yes
+
+services:
+  localsandbox:
+    image: ghcr.io/manuelgilm/localsandbox:latest
+    ports:
+      - "8888:8888"
+      - "5000:5000"
+    volumes:
+      - ./notebooks:/home/jovyan/work  # Jupyter notebooks
+      - ./mlflow:/mlflow                # MLflow tracking data
+      - ./data:/data                    # Datasets (optional)
