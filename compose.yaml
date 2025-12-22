@@ -2,24 +2,27 @@ services:
   mlflow:
     image: ghcr.io/mlflow/mlflow:v3.8.0rc0
     container_name: mlflow
+    user: root
     ports:
       - "5000:5000"
     volumes:
       - ./mlflow:/mlflow
-    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow/mlflow.db --default-artifact-root /mlflow/artifacts --serve-artifacts
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow/mlflow.db --default-artifact-root /mlflow/artifacts
     environment:
       - MLFLOW_SERVER_ALLOWED_HOSTS=*
 
   jupyter:
     image: jupyter/base-notebook:latest
     container_name: jupyter
+    user: root
     ports:
       - "8888:8888"
     volumes:
-      - ./notebooks:/home/jovyan/work
+      - ./notebooks:/home/jovyan/
+      - ./mlflow:/mlflow
     command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
     environment:
       - JUPYTER_ENABLE_LAB=yes
       - MLFLOW_TRACKING_URI=http://mlflow:5000
       - CHOWN_HOME=yes
-      - CHOWN_EXTRA=/home/jovyan/work
+      - CHOWN_EXTRA=/home/jovyan/
